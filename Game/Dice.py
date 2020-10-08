@@ -15,3 +15,6 @@ class Dice:
 
     def __str__(self):
         return "Dado(Face: %d)" % (self.currentSide)
+
+    def __repr__(self):
+        return self.__str__()

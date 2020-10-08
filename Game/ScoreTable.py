@@ -169,22 +169,41 @@ class ScoreTable:
 
         return newList
 
-    def calculate(self, diceList):
-        diceList.sort()
-        foundScore = []
-
-        # Condição especial
+    def calculateSpecial(self, diceList, foundScore):
         for scoreSpecial in self._scoreTableSpecial:
             contains = all(x in (getattr(d, 'currentSide') for d in diceList) for x in scoreSpecial["dices"])
             if contains:
                 foundScore.append(scoreSpecial)
+        return foundScore
 
+    def calculate(self, diceList):
+        diceList.sort()
+        foundScore = []
+
+        foundScore = self.calculateSpecial(diceList, foundScore)        
+
+        # Escolher o score mais alto das condições especiais, pois só uma pode ser escolhida
         if len(foundScore) > 0: 
             foundScore = [max(foundScore, key=lambda p: p['score'])]
 
         diceList = self.removeUsedDices(diceList, foundScore)
         
         # Condição geral
-        # (...)
+        stopFinding = False
+        scoreSortHighest = self._scoreTable.copy()
+        scoreSortHighest.sort(key=lambda score: score["score"], reverse=True)
+        
+        while stopFinding == False:
+            for score in scoreSortHighest:
+                toBeFindDices = score["dices"].copy()
+                for diceObj in diceList:
+                    if diceObj.currentSide in toBeFindDices:
+                        toBeFindDices.remove(diceObj.currentSide)
+                if len(toBeFindDices) == 0:
+                    foundScore.append(score)
+                    diceList = self.removeUsedDices(diceList, foundScore)
+                scoreSortHighest.remove(score)
+            if len(scoreSortHighest) == 0:
+                stopFinding = True
 
         return (foundScore, diceList)
