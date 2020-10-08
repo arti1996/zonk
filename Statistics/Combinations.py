@@ -1,8 +1,8 @@
 from itertools import product
-class Statistics:
+class Combinations:
 
     @staticmethod
-    def combinations(dices = 6):
+    def calc(dices = 6):
         sorted_combinations = []
         for combination in list(product(range(1, 7), repeat=dices)):
             combination = list(combination)
