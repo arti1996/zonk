@@ -42,6 +42,8 @@ if sys.argv[1] == "statistics":
 
 elif sys.argv[1] == "game":
     print("Iniciando uma partida de zonk com pontuação total de %s..." % sys.argv[2])
+elif sys.argv[1] == "test":
+    print(ScoreTable().calculate([ Dice(1), Dice(1), Dice(1), Dice(1) ]))
 else:
     print("Erro: Argumento '%s' não existe." % sys.argv[1])
     exit(0)

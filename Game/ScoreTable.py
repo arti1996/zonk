@@ -1,4 +1,5 @@
 import collections
+import operator
 
 class ScoreTable:
     _scoreTable = [
@@ -155,6 +156,9 @@ class ScoreTable:
         return common_list
 
     def removeUsedDices(self, diceList, foundScore):
+        if len(foundScore) == 0:
+            return diceList
+
         foundedList = []
         newList = diceList.copy()
 
@@ -191,18 +195,19 @@ class ScoreTable:
         # Condição geral
         stopFinding = False
         scoreSortHighest = self._scoreTable.copy()
-        scoreSortHighest.sort(key=lambda score: score["score"], reverse=True)
-        
+        scoreSortHighest = sorted(scoreSortHighest, key = lambda k : k['score'], reverse=True)
+
         while stopFinding == False:
             for score in scoreSortHighest:
                 toBeFindDices = score["dices"].copy()
                 for diceObj in diceList:
                     if diceObj.currentSide in toBeFindDices:
-                        toBeFindDices.remove(diceObj.currentSide)
+                        toBeFindDices.remove(diceObj.currentSide)     
                 if len(toBeFindDices) == 0:
                     foundScore.append(score)
                     diceList = self.removeUsedDices(diceList, foundScore)
                 scoreSortHighest.remove(score)
+                scoreSortHighest = sorted(scoreSortHighest, key = lambda k : k['score'], reverse=True)
             if len(scoreSortHighest) == 0:
                 stopFinding = True
 
